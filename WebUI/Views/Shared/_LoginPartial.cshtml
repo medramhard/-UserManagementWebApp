@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUserModel> _signInManager
+
+<ul class="navbar-nav d-flex align-items-center">
+    @if (_signInManager.IsSignedIn(User))
+    {
+        <li class="nav-item m-3">
+            Hello @User.Identity?.Name!
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-controller="Account" asp-action="LogOut" asp-route-returnUrl="@Url.Action("SignIn", "Account", new { area = "" })">
+                <button type="submit" class="btn btn-primary">Logout</button>
+            </form>
+        </li>
+    }
+</ul>
