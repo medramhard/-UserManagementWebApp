@@ -54,13 +54,13 @@
                             <input asp-for="ConfirmPassword" class="form-control" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <input type="submit" value="Sign Up" class="btn btn-primary" />
+                        <div class="form-group d-flex justify-content-center">
+                            <input type="submit" value="Sign Up" class="btn btn-primary m-2" />
+                            <a asp-controller="Account" asp-action="SignIn" class="btn btn-secondary m-2">Sign In</a>
                         </div>
                     </form>
                 </div>
             </div>
-            <p>Click <a asp-controller="Account" asp-action="SignIn">here</a> to sign in</p>
         </main>
     </div>
 </body>

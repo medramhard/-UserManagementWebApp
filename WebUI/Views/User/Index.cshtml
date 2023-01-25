@@ -1,7 +1,39 @@
-﻿
+﻿@model IEnumerable<UserViewModel>
+
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>User List</h1>
+<form method="post">
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">User List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="User" asp-action="Block" class="btn btn-primary">
+                <i class="bi bi-lock"></i> &nbsp; Block
+            </a>
+            <a asp-controller="User" asp-action="Unblock" class="btn btn-primary">
+                <i class="bi bi-unlock"></i>
+            </a>
+            <a asp-controller="User" asp-action="Delete" class="btn btn-secondary">
+                <i class="bi bi-trash3"></i>
+            </a>
+        </div>
+    </div>
+    <br />
 
+    <ejs-grid id="UserList" dataSource="@Model">
+        <e-grid-columns>
+            <e-grid-column field="" type="checkbox" width="60" allowFiltering="false" allowSorting="false"></e-grid-column>
+            <e-grid-column field="Id" headerText="Id" textAlign="Center" width="50"></e-grid-column>
+            <e-grid-column field="Email" headerText="Email Address" textAlign="Left"></e-grid-column>
+            <e-grid-column field="FullName" headerText="Full Name" textAlign="Left"></e-grid-column>
+            <e-grid-column field="CurrentStatus" headerText="Status" textAlign="Center" width="100"></e-grid-column>
+            <e-grid-column field="LastSeenDate" headerText="Last Seen" textAlign="Center" format="yyyy-MM-dd HH:mm" width="150"></e-grid-column>
+            <e-grid-column field="RegisteredDate" headerText="Registered" textAlign="Center" format="yyyy-MM-dd HH:mm" width="150"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+</div>
+</form>
