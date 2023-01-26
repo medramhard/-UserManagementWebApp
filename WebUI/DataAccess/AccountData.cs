@@ -10,11 +10,16 @@ public class AccountData : IAccountData
     private readonly UserManager<ApplicationUserModel> _userManager;
     private readonly SignInManager<ApplicationUserModel> _signInManager;
     private readonly ApplicationDbContext _db;
+    private readonly IHttpContextAccessor _httpContext;
+    private readonly string? _currentUser;
 
-    public AccountData(UserManager<ApplicationUserModel> userManager, SignInManager<ApplicationUserModel> signInManager, ApplicationDbContext db)
+    public AccountData(UserManager<ApplicationUserModel> userManager, SignInManager<ApplicationUserModel> signInManager, ApplicationDbContext db, IHttpContextAccessor httpContext)
+
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _httpContext = httpContext;
+        _currentUser = _httpContext.HttpContext.User.Identity.Name;
         _db = db;
     }
 
@@ -66,8 +71,18 @@ public class AccountData : IAccountData
         {
             var user = await _userManager.FindByEmailAsync(username);
             UpdateCurrentStatus(user, Status.Blocked);
+            await CheckIfCurrentUserIsBlockedOrDeleted(username);
             await _userManager.SetLockoutEnabledAsync(user, true);
             await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(100));
+            await _userManager.UpdateSecurityStampAsync(user);
+        }
+    }
+
+    private async Task CheckIfCurrentUserIsBlockedOrDeleted(string username)
+    {
+        if (username == _currentUser)
+        {
+            await LogOutUser();
         }
     }
 
@@ -95,7 +110,9 @@ public class AccountData : IAccountData
         foreach (var username in usernames)
         {
             var user = await _userManager.FindByEmailAsync(username);
+            await CheckIfCurrentUserIsBlockedOrDeleted(username);
             await _userManager.DeleteAsync(user);
+            await _userManager.UpdateSecurityStampAsync(user);
         }
     }
 }
