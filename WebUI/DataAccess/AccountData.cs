@@ -60,14 +60,25 @@ public class AccountData : IAccountData
         await _signInManager.SignOutAsync();
     }
 
-    public async Task UpdateUsersStatus(IEnumerable<UserViewModel> users, Status status, bool isBlocked)
+    public async Task BlockUsers(IEnumerable<string> usernames)
     {
-        var usernames = GetUsernames(users);
         foreach (var username in usernames)
         {
             var user = await _userManager.FindByEmailAsync(username);
-            UpdateCurrentStatus(user, status);
-            await _userManager.SetLockoutEnabledAsync(user, isBlocked);
+            UpdateCurrentStatus(user, Status.Blocked);
+            await _userManager.SetLockoutEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(100));
+        }
+    }
+
+    public async Task UnblockUsers(IEnumerable<string> usernames)
+    {
+        foreach (var username in usernames)
+        {
+            var user = await _userManager.FindByEmailAsync(username);
+            UpdateCurrentStatus(user, Status.Active);
+            await _userManager.SetLockoutEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow - TimeSpan.FromMinutes(1));
         }
     }
 
@@ -79,14 +90,8 @@ public class AccountData : IAccountData
         _db.SaveChanges();
     }
 
-    private IEnumerable<string> GetUsernames(IEnumerable<UserViewModel> users)
+    public async Task DeleteUsers(IEnumerable<string> usernames)
     {
-        return (from user in users where user.Selected select user.Email).ToList();
-    }
-
-    public async Task DeleteUsers(IEnumerable<UserViewModel> users)
-    {
-        var usernames = GetUsernames(users);
         foreach (var username in usernames)
         {
             var user = await _userManager.FindByEmailAsync(username);

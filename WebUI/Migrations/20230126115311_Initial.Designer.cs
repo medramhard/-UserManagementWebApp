@@ -12,8 +12,8 @@ using WebUI.Data;
 namespace WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230124091028_AddOrderIdPropertyToUserTable")]
-    partial class AddOrderIdPropertyToUserTable
+    [Migration("20230126115311_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,8 @@ namespace WebUI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.HasSequence<int>("OrderNumber");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -206,9 +208,8 @@ namespace WebUI.Migrations
 
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR OrderNumber");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");

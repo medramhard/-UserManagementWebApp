@@ -20,4 +20,8 @@
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="20.4.0.44" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

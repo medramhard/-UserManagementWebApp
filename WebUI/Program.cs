@@ -29,8 +29,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 builder.Services.AddScoped<IAccountData, AccountData>();
 
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2VVhkQlFadVdJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxQdkRhW35ecXVUQGldV0Q=");
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

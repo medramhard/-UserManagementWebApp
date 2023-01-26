@@ -11,7 +11,9 @@ public interface IAccountData
 
     Task LogOutUser();
 
-    Task UpdateUsersStatus(IEnumerable<UserViewModel> users, Status status, bool isBlocked);
+    Task BlockUsers(IEnumerable<string> usernames);
 
-    Task DeleteUsers(IEnumerable<UserViewModel> users);
+    Task UnblockUsers(IEnumerable<string> usernames);
+
+    Task DeleteUsers(IEnumerable<string> usernames);
 }

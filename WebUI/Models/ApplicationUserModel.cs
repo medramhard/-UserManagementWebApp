@@ -7,7 +7,6 @@ namespace WebUI.Models;
 
 public class ApplicationUserModel : IdentityUser
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int OrderId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

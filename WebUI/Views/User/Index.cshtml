@@ -1,39 +1,75 @@
-﻿@model IEnumerable<UserViewModel>
+﻿@model UserViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <form method="post">
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">User List</h2>
+    <div class="container p-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">List of Users</h2>
+            </div>
+            <div class="col-6 text-end">
+                <button asp-action="Block" class="btn btn-primary" id="block" type="submit"><i class="bi bi-lock"></i> &nbsp; Block</button>
+                <button asp-action="Unblock" class="btn btn-primary" id="unblock" type="submit"><i class="bi bi-unlock"></i></button>
+                <button asp-action="Delete" class="btn btn-secondary" id="delete" type="submit"><i class="bi bi-trash3"></i></button>
+            </div>
         </div>
-        <div class="col-6 text-end">
-            <a asp-controller="User" asp-action="Block" class="btn btn-primary">
-                <i class="bi bi-lock"></i> &nbsp; Block
-            </a>
-            <a asp-controller="User" asp-action="Unblock" class="btn btn-primary">
-                <i class="bi bi-unlock"></i>
-            </a>
-            <a asp-controller="User" asp-action="Delete" class="btn btn-secondary">
-                <i class="bi bi-trash3"></i>
-            </a>
+        <br />
+
+        <div id="checkboxes" style="height:400px; overflow:auto">
+            <table class="table table-bordered table-striped" style="width:100%" id="users">
+                <thead class="text-center text-primary">
+                    
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="checkall" class="form-check-input" />
+                        </th>
+                        <th>ID</th>
+                        <th>Email Address</th>
+                        <th>Full Name</th>
+                        <th>Status</th>
+                        <th>Last Seen</th>
+                        <th>Registered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="text-center">
+                            <td>
+                                <input type="checkbox" asp-for="@user.Selected" value="@user.Email" class="form-check-input" name="CheckedUsers" id="checkbox_@user.Email">
+                            </td>
+                            <td>@user.Id</td>
+                            <td class="text-start">@user.Email</td>
+                            <td class="text-start">@user.FullName</td>
+                            <td>@user.CurrentStatus</td>
+                            <td>@user.LastSeenDate</td>
+                            <td>@user.RegisteredDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-    <br />
-
-    <ejs-grid id="UserList" dataSource="@Model">
-        <e-grid-columns>
-            <e-grid-column field="" type="checkbox" width="60" allowFiltering="false" allowSorting="false"></e-grid-column>
-            <e-grid-column field="Id" headerText="Id" textAlign="Center" width="50"></e-grid-column>
-            <e-grid-column field="Email" headerText="Email Address" textAlign="Left"></e-grid-column>
-            <e-grid-column field="FullName" headerText="Full Name" textAlign="Left"></e-grid-column>
-            <e-grid-column field="CurrentStatus" headerText="Status" textAlign="Center" width="100"></e-grid-column>
-            <e-grid-column field="LastSeenDate" headerText="Last Seen" textAlign="Center" format="yyyy-MM-dd HH:mm" width="150"></e-grid-column>
-            <e-grid-column field="RegisteredDate" headerText="Registered" textAlign="Center" format="yyyy-MM-dd HH:mm" width="150"></e-grid-column>
-        </e-grid-columns>
-    </ejs-grid>
-</div>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function toggleChecked(status) {
+            $("#checkboxes input").each(function () {
+                $(this).prop("checked", status);
+            });
+        }
+
+        $(document).ready(function () {
+            $("#checkall").prop('checked', false);
+            $("#checkall").click(function () {
+                var status = $("#checkall").prop('checked');
+                toggleChecked(status);
+            });
+        });
+    </script>
+}

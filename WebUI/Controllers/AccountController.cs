@@ -29,6 +29,7 @@ public class AccountController : Controller
                 {
                     ModelState.AddModelError("", e.Description);
                 }
+                return View();
             }
         }
         return RedirectToAction("Index", "User");

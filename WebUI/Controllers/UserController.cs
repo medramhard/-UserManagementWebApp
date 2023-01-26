@@ -22,13 +22,16 @@ public class UserController : Controller
     public IActionResult Index()
     {
         IEnumerable<ApplicationUserModel> data = _db.Users;
-        var users = ConvertUserModelListToView(data);
-        return View(users);
+        UserViewModel model = new()
+        {
+            Users = ConvertUserModelListToView(data)
+        };
+        return View(model);
     }
 
-    private IEnumerable<UserViewModel> ConvertUserModelListToView(IEnumerable<ApplicationUserModel> users)
+    private IEnumerable<UserModel> ConvertUserModelListToView(IEnumerable<ApplicationUserModel> users)
     {
-        var output = new List<UserViewModel>();
+        var output = new List<UserModel>();
         foreach (var user in users)
         {
             output.Add(user);
@@ -36,21 +39,24 @@ public class UserController : Controller
         return output;
     }
 
-    public async Task<IActionResult> Block(IEnumerable<UserViewModel> users)
+    [HttpPost]
+    public async Task<IActionResult> Block(UserViewModel model)
     {
-        await _accountData.UpdateUsersStatus(users, Status.Blocked, true);
+        await _accountData.BlockUsers(model.CheckedUsers);
         return RedirectToAction("Index");
     }
 
-    public async Task <IActionResult> Unblock(IEnumerable<UserViewModel> users)
+    [HttpPost]
+    public async Task <IActionResult> Unblock(UserViewModel model)
     {
-        await _accountData.UpdateUsersStatus(users, Status.Active, false);
+        await _accountData.UnblockUsers(model.CheckedUsers);
         return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> Delete(IEnumerable<UserViewModel> users)
+    [HttpPost]
+    public async Task<IActionResult> Delete(UserViewModel model)
     {
-        await _accountData.DeleteUsers(users);
+        await _accountData.DeleteUsers(model.CheckedUsers);
         return RedirectToAction("Index");
     }
 }
